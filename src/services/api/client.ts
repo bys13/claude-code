@@ -303,8 +303,10 @@ export async function getAnthropicClient({
     authToken: isClaudeAISubscriber()
       ? getClaudeAIOAuthTokens()?.accessToken
       : undefined,
-    // Set baseURL from OAuth config when using staging OAuth
-    ...(process.env.USER_TYPE === 'ant' &&
+    // Set baseURL from env var (for third-party API compat like MiniMax) or OAuth staging
+    ...(process.env.ANTHROPIC_BASE_URL
+      ? { baseURL: process.env.ANTHROPIC_BASE_URL }
+      : process.env.USER_TYPE === 'ant' &&
     isEnvTruthy(process.env.USE_STAGING_OAUTH)
       ? { baseURL: getOauthConfig().BASE_API_URL }
       : {}),

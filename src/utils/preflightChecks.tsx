@@ -14,6 +14,10 @@ export interface PreflightCheckResult {
   sslHint?: string;
 }
 async function checkEndpoints(): Promise<PreflightCheckResult> {
+  // Skip preflight check for non-Anthropic endpoints (e.g. MiniMax, OpenRouter)
+  if (process.env.ANTHROPIC_BASE_URL) {
+    return { success: true };
+  }
   try {
     const oauthConfig = getOauthConfig();
     const tokenUrl = new URL(oauthConfig.TOKEN_URL);
