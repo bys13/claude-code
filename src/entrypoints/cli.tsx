@@ -1,5 +1,11 @@
 #!/usr/bin/env bun
-import { feature } from 'bun:bundle';
+// Read feature flags from CLAUDE_INTERNAL_FC_OVERRIDES env var (JSON object)
+const FC_OVERRIDES: Record<string, boolean> = (() => {
+  try {
+    return JSON.parse(process.env.CLAUDE_INTERNAL_FC_OVERRIDES || '{}');
+  } catch { return {}; }
+})();
+const feature = (name: string): boolean => FC_OVERRIDES[name] ?? false;
 
 // Bugfix for corepack auto-pinning, which adds yarnpkg to peoples' package.jsons
 // eslint-disable-next-line custom-rules/no-top-level-side-effects
